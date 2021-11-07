@@ -55,15 +55,19 @@ addEventListener("fetch", async event => {
 
 const router = new Router();
 router
-  .get("/", async (context) => {
+  .get("/:id", async (context) => {
+    const {id} = context.params
 
-    let data = {
-      res: "Hello World"
+    let data 
+    const BASE = 'https://xkcd.com/'+id
+    try {
+      const fet = await fetch(BASE)
+      const text = await fet.text()
+      data = await parseHtml(text)      
+    } catch (error) {
+      data = {error:error.message}
+      context.response.status = 500
     }
-    const BASE = 'https://xkcd.com/'
-    const fet = await fetch(BASE)
-    const text = await fet.text()
-    data = await parseHtml(text)
     const response = new Response(JSON.stringify(data), {
       headers: {
         "content-type": "application/json"
@@ -71,20 +75,34 @@ router
     })
     context.response.body = data;
   })
-  .post("/messages", async (context) => {
-    const message = await context.request.body().value;
-    messages.push(message);
-    channel.postMessage(message);
-    context.response.body = messages;
+  .get("/", async (context) => {
+
+    let data
+    const BASE = 'https://xkcd.com/'
+    try {      
+      const fet = await fetch(BASE)
+      const text = await fet.text()
+      data = await parseHtml(text)
+    } catch (error) {
+      data = error
+      context.response.status = 500
+    }
+    const response = new Response(JSON.stringify(data), {
+      headers: {
+        "content-type": "application/json"
+      }
+    })
+    context.response.body = data;
   });
 
 const app = new Application();
 app.use(oakCors());
 app.use(router.routes());
 app.use(router.allowedMethods());
+const port = 8000
 
 /* await app.listen({
-  port: 8000
-}); */
+  port
+}); */ 
 
 addEventListener("fetch", app.fetchEventHandler());
