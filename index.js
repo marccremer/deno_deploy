@@ -37,22 +37,6 @@ async function parseHtml(html) {
   }
 }
 
-
-addEventListener("fetch", async event => {
-  const data = {
-    res: "Hello World"
-  }
-  const BASE = 'https://xkcd.com/'
-  const fet = await fetch(BASE)
-  data.res = await fet.text()
-  const response = new Response(JSON.stringify(data), {
-    headers: {
-      "content-type": "application/json"
-    }
-  })
-  event.respondWith(response)
-})
-
 const router = new Router();
 router
   .get("/:id", async (context) => {
