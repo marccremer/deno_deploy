@@ -16,3 +16,24 @@ async function parseHtml(html) {
     title = $(el).children().attr('title')
     imgsrc = imgsrc
   })
+
+  return {
+    prev,
+    next,
+    imgsrc,
+    title
+  }
+}
+
+
+addEventListener("fetch", event => {
+
+  const response = new Response({
+    data: "Hello World"
+  }, {
+    headers: {
+      "content-type": "application/json"
+    }
+  })
+  event.respondWith(response)
+})
