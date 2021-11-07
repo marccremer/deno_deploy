@@ -27,10 +27,11 @@ async function parseHtml(html) {
 
 
 addEventListener("fetch", event => {
+  const data = {
+    res: "Hello World"
+  }
 
-  const response = new Response({
-    data: "Hello World"
-  }, {
+  const response = new Response(JSON.stringify(data), {
     headers: {
       "content-type": "application/json"
     }
